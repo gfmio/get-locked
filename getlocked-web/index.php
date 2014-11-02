@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 // Load Slim framework
 error_reporting(-1);

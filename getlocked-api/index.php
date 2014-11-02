@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 // Load Slim framework
 error_reporting(-1);
@@ -16,14 +15,20 @@ $app = new \Slim\Slim(array(
 	'debug' => true
 ));
 
+$app->add(new \Slim\Middleware\SessionCookie(array(
+    'expires' => '20 minutes',
+    'path' => '/',
+    'domain' => null,
+    'secure' => false,
+    'httponly' => false,
+    'name' => 'slim_session',
+    'secret' => 'CHANGE_ME',
+    'cipher' => MCRYPT_RIJNDAEL_256,
+    'cipher_mode' => MCRYPT_MODE_CBC
+)));
+
 $app->view(new \JsonApiView());
 $app->add(new \JsonApiMiddleware());
- 
-// $app->get('/', function() use ($app) {
-// 	$app->render(200,array(
-//         'msg' => 'msg'
-//     ));
-// });
 
 // User routes
 
@@ -106,6 +111,17 @@ $app->put('/locks/:lock', function() use ($app) {
 });
 $app->delete('/locks/:lock', function() use ($app) {
     // ...
+    $app->render(200,array(
+        'msg' => 'msg'
+    ));
+});
+
+$app->get('/locks/:lock/lock', function() use ($app) {
+    $app->render(200,array(
+        'msg' => 'msg'
+    ));
+});
+$app->get('/locks/:lock/unlock', function() use ($app) {
     $app->render(200,array(
         'msg' => 'msg'
     ));

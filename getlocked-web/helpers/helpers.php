@@ -1,3 +1,4 @@
 <?php
 
-require_once 'class.user.php';
+// temporary
+require_once '../getlocked-api/helpers/class.user.php';
