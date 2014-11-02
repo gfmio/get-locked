@@ -4,31 +4,38 @@
 error_reporting(-1);
 ini_set('display_errors', '1');
 ini_set('error_reporting', E_ALL);
- 
+
 require_once 'Slim/Slim.php';
 \Slim\Slim::registerAutoloader();
- 
+
+require_once 'helpers/helpers.php';
+
 global $app;
 $app = new \Slim\Slim(array(
-'debug' => true
+	'debug' => true
 ));
+
+$app->view(new \JsonApiView());
+$app->add(new \JsonApiMiddleware());
  
-echo 'REQUEST_URI: '.$_SERVER['REQUEST_URI'].'<br/>QUERY_STRING: '.$_SERVER['QUERY_STRING'].'<br/>';
- 
-$app->get('/', function() use ($app) {
-echo "This is the root.";
-});
- 
-$app->get('/test', function() use ($app) {
-echo "This is a test.";
-});
+// $app->get('/', function() use ($app) {
+// 	$app->render(200,array(
+//         'msg' => 'msg'
+//     ));
+// });
  
 $app->error(function (\Exception $e) use ($app) {
-echo 'This is an Error 500.';
+	$app->render(500,array(
+        'msg' => 'error',
+        'error' => true
+    ));
 });
  
 $app->notFound(function () use ($app) {
-echo 'This is an Error 404.';
+	$app->render(404,array(
+        'msg' => 'not found',
+        'error' => true
+    ));
 });
  
 // Run Slim Application

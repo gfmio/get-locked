@@ -6,9 +6,10 @@ error_reporting(-1);
 ini_set('display_errors', '1');
 ini_set('error_reporting', E_ALL);
 
-require_once 'helpers/helpers.php';
 require_once 'Slim/Slim.php';
 \Slim\Slim::registerAutoloader();
+
+require_once 'helpers/helpers.php';
  
 global $app;
 $app = new \Slim\Slim(array(
