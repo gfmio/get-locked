@@ -13,19 +13,20 @@ class DB {
 	protected $stmt = "";
 
 	public function __construct() {
-		$this->dns = $engine.':dbname='.$database.";host=".$host;
-		$this->pdo = new PDO( $dns, $user, $pass );
+		$this->dns = $this->engine.':dbname='.$this->database.";host=".$this->host;
+		$this->pdo = new PDO( $this->dns, $this->user, $this->pass );
 	}
 
-	public function prepareStatement($sql) {
-		$this->stmt = $pdo->prepare($sql);
+	public function prepareStatement($sql) {
+		$this->stmt = $this->pdo->prepare($sql);
 	}
 
-	public function bindParam($parameter, $value, $type) {
+	public function bindParam($parameter, $value, $type) {
 		$this->stmt->bindParam($parameter, $value, $type);
 	}
 
 	public function executeStatement() {
-		return $this->stmt->execute();
+		$this->stmt->execute();
+		return $this->stmt;
 	}
 }
