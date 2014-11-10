@@ -9,7 +9,7 @@ require_once 'Slim/Slim.php';
 \Slim\Slim::registerAutoloader();
 
 require_once 'helpers/helpers.php';
- 
+
 global $app;
 $app = new \Slim\Slim(array(
 	'debug' => true,
@@ -21,6 +21,12 @@ $app->get('/', function() use ($app) {
 });
 $app->get('/get-started', function() use ($app) {
 	$app->render("get-started.html");
+});
+$app->get('/sample', function() use ($app) {
+	$app->render("sample.html");
+});
+$app->post('/sample', function() use ($app) {
+	SendRequest("https://agent.electricimp.com/EbbcCn0OZAA-/lock/open");
 });
 
 $app->get('/locks', function() use ($app) {

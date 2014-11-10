@@ -9,7 +9,7 @@ class User {
 	protected $locks = array();
 	
 	public static function encrypt($code) {
-		return sha1($salt.$code);
+		return sha1(self::$salt.$code);
 	}
 
 	public static function getCurrentUser() {
@@ -23,16 +23,24 @@ class User {
 
 	public function login() {
 		$db = new DB();
+		echo "c";
 		$db->prepareStatement("SELECT `id` FROM `users` WHERE email=:email AND password=:password");
+		echo "c";
 		$db->bindParam(':email', $this->email, PDO::PARAM_STR);
+		echo "c";
 		$db->bindParam(':password', $this->password, PDO::PARAM_STR);
+		echo "c";
 		$db->executeStatement();
+		echo "c";
 		$result = $db->stmt->fetch(PDO::FETCH_OBJ);
+		echo "c";
 		if (!$result) {
+			echo "d";
 			throw new Exception("wrong credentials");
 		}
 
 		$this->id = $result->id;
+		echo "c";
 		$_SESSION["id"] = $this->id;
 	}
 
@@ -71,12 +79,20 @@ class User {
 
 	public function insert() {
 		$db = new DB();
+		echo "b";
 		$db->prepareStatement("INSERT INTO `users`(`email`, `password`) VALUES (:email,:password)");
+
+		echo "b";
 		$db->bindParam(':email', $this->email, PDO::PARAM_STR);
+
+		echo "b";
 		$db->bindParam(':password', $this->password, PDO::PARAM_STR);
+
+		echo "b";
 		$db->executeStatement();
 
-		$this->id = $db->lastInsertId();
+		echo "b";
+		$this->login();
 	}
 
 	public function delete() {

@@ -34,9 +34,29 @@ $app->add(new \JsonApiMiddleware());
 
 $app->get('/users', function() use ($app) { $app->render(403, array('msg' => 'forbidden', 'error' => true)); });
 $app->post('/users', function() use ($app) { 
-    // ...
+    // ob_start();
+    // $allGetVars = $app->request->get();
+    // $allPostVars = $app->request->post();
+    // $allPutVars = $app->request->put();
+
+    // var_dump($allGetVars);
+    // var_dump($allPostVars);
+    // var_dump($allPutVars);
+    // $output = ob_get_contents();
+    // ob_end_clean();
+
+    $user = new User();
+    echo "a";
+    $user->setEmail($app->request->get("email"));
+    echo "a";
+    $user->setPassword($app->request->get("password"));
+    echo "a";
+    $user->insert();
+    echo "a";
+    die();
+
     $app->render(200,array(
-        'msg' => 'msg'
+        'user' => $user->id
     ));
 });
 $app->put('/users', function() use ($app) { $app->render(403, array('msg' => 'forbidden', 'error' => true)); });

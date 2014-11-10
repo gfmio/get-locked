@@ -91,7 +91,93 @@ function ajaxSubmit(form, success, failure) {
 	});
 }
 
+// CORS Request Helper
+
+function createCORSRequest(method, url) {
+  var xhr = new XMLHttpRequest();
+  if ("withCredentials" in xhr) {
+
+    // Check if the XMLHttpRequest object has a "withCredentials" property.
+    // "withCredentials" only exists on XMLHTTPRequest2 objects.
+    xhr.open(method, url, true);
+
+  } else if (typeof XDomainRequest != "undefined") {
+
+    // Otherwise, check if XDomainRequest.
+    // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+    xhr = new XDomainRequest();
+    xhr.open(method, url);
+
+  } else {
+
+    // Otherwise, CORS is not supported by the browser.
+    xhr = null;
+
+  }
+  return xhr;
+}
+
 // Fill views with data
+
+function fillGetStartedView() {
+	$("form#signup-form").submit(function(e){
+		e.preventDefault();
+
+		// https://agent.electricimp.com/EbbcCn0OZAA-/lock/open
+		// $.ajax({
+		// 	url: "https://agent.electricimp.com/EbbcCn0OZAA-/lock/open",
+		// 	type: 'GET',
+		// 	contentType: false,
+		// 	cache: false,
+		// 	processData:false,
+		// 	success: function(data, textStatus, jqXHR)
+		// 	{
+		// 		console.log("success", data);
+		// 	},
+		// 	error: function(jqXHR, textStatus, errorThrown)
+		// 	{
+		// 		console.log("failure");
+		// 	}
+		// });
+
+		var url = "//api.get-locked.com/users";
+		var xhr = createCORSRequest('GET', url);
+		if (!xhr) {
+		  throw new Error('CORS not supported');
+		}
+		
+		var formdata = new FormData();
+		formdata.append("email", $(this).find('input[name="mail"]').val());
+		formdata.append("password", $(this).find('input[name="pass"]').val());
+
+		$.support.cors = true;
+		$.ajax({
+			url: url,
+			type: 'POST',
+			data: formdata,
+			crossDomain: true,
+			mimeType:"multipart/form-data",
+			contentType: false,
+			cache: false,
+			processData:false,
+			success: function(data, textStatus, jqXHR)
+			{
+				var response = JSON.parse(data);
+				if (response.status == 200) {
+					signUpSuccess(response);
+				} else {
+					signUpFailure(response);
+				}
+			},
+			error: function(jqXHR, textStatus, errorThrown)
+			{
+				alert("An unexpected error occurred.");
+			}
+		});
+
+		return false;
+	});
+}
 
 function fillLocksView() {
 
@@ -116,9 +202,16 @@ function fillLockLogView() {
 // Form handlers
 
 function signUpSuccess(response) {
-
+	console.log("signup successful");
 }
 function signUpFailure(response) {
+
+}
+
+function sampleSuccess(response) {
+
+}
+function sampleFailure(response) {
 
 }
 
@@ -183,6 +276,7 @@ function lockRemoveUserFailure(response) {
 $(document).ready(function() {
 	// Load document data
 
+	fillGetStartedView();
 	fillLocksView();
 	fillLockEditView();
 	fillProfileView();
@@ -191,7 +285,10 @@ $(document).ready(function() {
 	
 	// Register form submission handlers
 
-	ajaxSubmit($("form#signup-form"), signUpSuccess, signUpFailure);
+	ajaxSubmit($("form#sample-form"), sampleSuccess, sampleFailure);
+	
+	
+	// ajaxSubmit($("form#signup-form"), signUpSuccess, signUpFailure);
 	ajaxSubmit($("form#login-form"), loginSuccess, loginFailure);
 	ajaxSubmit($("form#profile-update-form"), profileUpdateSuccess, profileUpdateFailure);
 	ajaxSubmit($("form#profile-delete-form"), profileDeleteSuccess, profileDeleteFailure);

@@ -1,8 +1,6 @@
 <?php
 
-function SendRequest( $url, $method = 'GET', $data = array(), $headers = array('Content-type: application/x-www-form-urlencoded'), $base_url = "https://app.my-opinion.de/live") {
-	$url = $base_url.$url;
-
+function SendRequest( $url, $method = 'GET', $data = array(), $headers = array('Content-type: application/x-www-form-urlencoded')) {
 	if (function_exists('curl_version')) {
 		$ch = curl_init();
 
